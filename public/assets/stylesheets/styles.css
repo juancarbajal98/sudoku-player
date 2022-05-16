@@ -1,0 +1,70 @@
+body{
+    text-align: center;
+}
+/* grid */
+#container{
+    height: 27em;
+    width: 27em;
+    margin: auto;
+    border: 3px solid black;
+    position: relative;
+}
+
+.line{
+    background: black;
+    position: absolute;
+}
+
+.line.h{
+    height:1px;
+    width: 100%;
+}
+
+.line.v{
+    width: 1px;
+    height: 100%;
+}
+
+#h3, #h6{
+    height:3px;
+}
+
+#v3, #v6{
+    width: 3px;
+}
+
+/* inputs */
+form{
+    margin-block-end: 0;
+}
+
+.row{
+    width: 100%;
+    height: calc(100% / 9);
+}
+.input{
+    font-size: 27px;
+    /* position: absolute; */
+    border: none;
+    height: 1em;
+    width: 1em;
+    left: 0;
+    margin: 0.3em;
+    padding: 0;
+    text-align: center;
+}
+
+.input:focus{
+    outline:none;
+}
+
+/* controls */
+
+#resultControls{
+    width: calc(100%-4em);
+    margin: 2em;
+}
+
+#resultControls button{
+    margin: 0 12%;
+}
