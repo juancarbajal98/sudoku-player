@@ -1,3 +1,26 @@
+/* 
+Takes in 1d array that represents puzzle and draws it onto the grid.
+
+Note: the input array follows a very specific format in order for this to work:
+no spaces must exist, blanks must be represented by two single quotes, and there 
+should not be any newlines
+*/
+function pasteToGrid(){
+  let input = document.getElementById('pasteText').value
+  let vals = []
+  input = input.substring(1,input.length-1).split(',')
+  for(let i = 0; i <81;i++){
+    if(input[i]==="''"){
+      vals.push('')
+      continue
+    }
+    vals.push(input[i].substring(1,2))
+  }
+  for(let i=0; i<vals.length; i++){
+    document.getElementById(`num${i+1}`).value = vals[i]
+  }
+}
+
 function solver_bruteForce(){
     // capture submitted puzzle
     const formData = new FormData(document.querySelector('form'))
@@ -10,30 +33,18 @@ function solver_bruteForce(){
     // store indices where blanks occur in 1D as key, its candidates as value
     let blanks = {}
     for (var pair of formData.entries()) {
-        if(pair[1]==='') blanks[`${pair[0]-1}`] = ['1','2','3','4','5','6','7','8','9']
+        if(pair[1]==='') blanks[`${parseInt(pair[0].substring(3))-1}`] = ['1','2','3','4','5','6','7','8','9']
         vals.push(pair[1])
     }
-    
     // update candidates until problem is solved
     while(!solved){
         solved = updateCandidates(blanks, vals, Object.keys(blanks).length)
     }
-
     // put values back into HTML
     for(let i=0; i<vals.length; i++){
-        document.getElementById(`num${i+1}`).innerHTML = vals[i]
+      document.getElementById(`num${i+1}`).value = vals[i]
     }
     return true
-
-    // // put all values into puzzle
-    // for(let i=0; i <9; i++){
-    //     for(let j=0; j <9; j++) {
-    //         puzzle[i][j] = vals[count]
-    //         count++
-    //     }
-    // }
-
-    // return puzzle
 }
 
 // returns true when puzzle is solved or when looping no longer solves anything else
@@ -139,57 +150,14 @@ function getBoxNum(row, col){
     }
 }
 
-breezyPuzzle = [
-    ['8', '.', '.', '.', '.', '4', '7', '1', '.'],
-    ['3', '6', '.', '5', '1', '7', '2', '.', '8'],
-    ['2', '7', '.', '8', '9', '.', '5', '.', '3'],
-    ['7', '.', '.', '.', '6', '8', '9', '.', '4'],
-    ['5', '4', '6', '.', '7', '.', '8', '3', '1'],
-    ['9', '.', '.', '.', '5', '1', '6', '.', '2'],
-    ['1', '2', '.', '7', '4', '.', '3', '.', '5'],
-    ['4', '5', '.', '6', '8', '3', '1', '.', '7'],
-    ['6', '.', '.', '.', '.', '5', '4', '8', '.'],
-]
+breezyPuzzle = 
+['8','','','','','4','7','1','','3','6','','5','1','7','2','','8','2','7','','8','9','','5','','3','7','','','','6','8','9','','4','5','4','6','','7','','8','3','1','9','','','','5','1','6','','2','1','2','','7','4','','3','','5','4','5','','6','8','3','1','','7','6','','','','','5','4','8','']
 
-easyPuzzle = [
-    ['.', '6', '8', '.', '4', '.', '.', '.', '.'],
-    ['5', '.', '.', '9', '.', '3', '.', '.', '.'],
-    ['7', '.', '.', '1', '.', '.', '.', '.', '.'],
-    ['.', '5', '7', '.', '2', '.', '.', '8', '.'],
-    ['2', '.', '.', '4', '.', '6', '.', '.', '7'],
-    ['.', '1', '.', '.', '7', '.', '6', '2', '.'],
-    ['.', '.', '.', '.', '.', '7', '.', '.', '2'],
-    ['.', '.', '.', '6', '.', '5', '.', '.', '1'],
-    ['.', '.', '.', '.', '3', '.', '9', '5', '.'],
-]
+easyPuzzle = 
+['','6','8','','4','','','','','5','','','9','','3','','','','7','','','1','','','','','','','5','7','','2','','','8','','2','','','4','','6','','','7','','1','','','7','','6','2','','','','','','','7','','','2','','','','6','','5','','','1','','','','','3','','9','5','']
 
-mediumPuzzle = [
-    ['2', '.', '.', '.', '.', '.', '3', '.', '7'],
-    ['.', '.', '.', '2', '1', '.', '.', '.', '.'],
-    ['3', '.', '9', '7', '8', '.', '4', '.', '.'],
-    ['.', '.', '.', '4', '.', '2', '8', '7', '.'],
-    ['.', '3', '4', '.', '.', '.', '9', '2', '.'],
-    ['.', '2', '8', '6', '.', '9', '.', '.', '.'],
-    ['.', '.', '1', '.', '9', '7', '2', '.', '3'],
-    ['.', '.', '.', '.', '6', '8', '.', '.', '.'],
-    ['8', '.', '3', '.', '.', '.', '.', '.', '5'],
-]
+mediumPuzzle = 
+['2','','','','','','3','','7','','','','2','1','','','','','3','','9','7','8','','4','','','','','','4','','2','8','7','','','3','4','','','','9','2','','','2','8','6','','9','','','','','','1','','9','7','2','','3','','','','','6','8','','','','8','','3','','','','','','5']
 
-hardPuzzle = [
-    ['9', '7', '.', '4', '.', '.', '.', '2', '.'],
-    ['3', '.', '.', '.', '.', '1', '.', '.', '8'],
-    ['.', '.', '5', '.', '.', '8', '.', '.', '.'],
-    ['.', '.', '.', '.', '.', '.', '7', '3', '.'],
-    ['.', '4', '.', '.', '.', '.', '.', '.', '.'],
-    ['2', '.', '7', '1', '.', '.', '.', '.', '5'],
-    ['4', '.', '.', '8', '.', '.', '6', '.', '.'],
-    ['.', '6', '.', '.', '9', '.', '.', '.', '2'],
-    ['.', '.', '3', '2', '.', '.', '.', '5', '1'],
-]
-
-// console.log(solver_bruteForce(breezyPuzzle)) // PASSED
-// console.log(solver_bruteForce(easyPuzzle)) // PASSED
-
-// // ATM does not solve, gets stuck in while loop
-// console.log(solver_bruteForce(mediumPuzzle)) 
-// console.log(solver_bruteForce(hardPuzzle))
+hardPuzzle = 
+['9','7','','4','','','','2','','3','','','','','1','','','8','','','5','','','8','','','','','','','','','','7','3','','','4','','','','','','','','2','','7','1','','','','','5','4','','','8','','','6','','','','6','','','9','','','','2','','','3','2','','','','5','1']

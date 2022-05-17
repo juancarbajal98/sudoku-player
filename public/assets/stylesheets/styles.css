@@ -1,6 +1,7 @@
 body{
     text-align: center;
 }
+
 /* grid */
 #container{
     height: 27em;
@@ -43,7 +44,7 @@ form{
     height: calc(100% / 9);
 }
 .input{
-    font-size: 27px;
+    font-size: 30px;
     /* position: absolute; */
     border: none;
     height: 1em;
@@ -58,13 +59,42 @@ form{
     outline:none;
 }
 
-/* controls */
-
-#resultControls{
-    width: calc(100%-4em);
-    margin: 2em;
+/* Puzzle Paste */
+.paste{
+  margin: auto;
+  width: 28em;
 }
 
-#resultControls button{
-    margin: 0 12%;
+#pasteText{
+  margin-top: 1em;
+  width: 27em;
+}
+
+#pasteText, #pasteButton{
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+}
+
+/* controls */
+
+#bruteForceControls{
+  width: 50%;
+  margin: 2em auto;
+  border: 2px solid rebeccapurple;
+  padding: 2em;
+}
+
+#bruteForceControls button{
+    margin: 0 10%;
+}
+
+#eliminatePairsControls{
+  width: 50%;
+  margin: 2em auto;
+  border: 2px solid rgb(76, 231, 89);
+  padding: 2em;
+}
+
+#eliminatePairsControls button{
+    margin: 0 8%;
 }
