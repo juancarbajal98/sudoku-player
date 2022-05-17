@@ -20,7 +20,12 @@ function pasteToGrid(){
     document.getElementById(`num${i+1}`).value = vals[i]
   }
 }
-
+/* 
+TODO: Write a solver class that has the different solving methods as its methods 
+and the button click triggers a function call that creates an instance of the 
+Solver class and specifies the method as a param (so things like the code for
+capturing form data can be generalized to class structure)
+*/
 function solver_bruteForce(){
     // capture submitted puzzle
     const formData = new FormData(document.querySelector('form'))
@@ -44,11 +49,15 @@ function solver_bruteForce(){
     for(let i=0; i<vals.length; i++){
       document.getElementById(`num${i+1}`).value = vals[i]
     }
-    return true
+    // return true
+    setTimeout(()=> {
+        solver_eliminatePairs(vals, blanks)
+    }, "2000")
 }
 
 // returns true when puzzle is solved or when looping no longer solves anything else
 function updateCandidates(blanks, vals, num_of_blanks){
+    // update every blank's respective candidate array by checking its associated row, col, box
     for(const [index, candidates] of Object.entries(blanks)){
         blanks[index] = checkRow(index, vals, blanks[index])
         blanks[index] = checkCol(index, vals, blanks[index])
@@ -60,6 +69,7 @@ function updateCandidates(blanks, vals, num_of_blanks){
             delete blanks[index]
             // once last key is deleted return true
             if(Object.keys(blanks).length === 0) return true
+            // exit for loop as soon as new val is deduced
             break
         }
     }
@@ -82,7 +92,129 @@ function updateCandidates(blanks, vals, num_of_blanks){
         console.log(blanks)
         return true
     }
+    // in the case that blanks still exist after we just removed a value, recursive call
     return updateCandidates(blanks, vals, Object.keys(blanks).length)
+}
+
+// TODO: Figure how to get these params provided from brute force calling (maybe global variables, maybe creating event listener when first button is clicked)
+function solver_eliminatePairs(vals, blanks){
+    // // capture submitted puzzle
+    // const formData = new FormData(document.querySelector('form'))
+
+    // set solved to false
+    solved = false
+
+    // // store values in 1D
+    // let vals = []
+    // // store indices where blanks occur in 1D as key, its candidates as value
+    // let blanks = {}
+    // for (var pair of formData.entries()) {
+    //     if(pair[1]==='') blanks[`${parseInt(pair[0].substring(3))-1}`] = ['1','2','3','4','5','6','7','8','9']
+    //     vals.push(pair[1])
+    // }
+    
+    while(!solved){
+        solved = deduceFromPairs(blanks, vals)
+    }
+
+    // put values back into HTML
+    for(let i=0; i<vals.length; i++){
+        document.getElementById(`num${i+1}`).value = vals[i]
+    }
+    return true
+}
+
+// should return true once puzzle is solved OR all pairs have been visited
+function deduceFromPairs(blanks, vals, visited_pairs = []){
+    /* 
+    for every blank we check first if its candidate length is 2 
+    if it isn't we continue
+    if it is we check its row to look for a pair - if one is found
+    we then scan all other blanks in that row to remove any other
+    instances of the pair
+    we do the same for the col
+    we do the same for the box
+
+    same logic follows from before where if we reduce a candidate array 
+    to length 1 then we update vals array and call recursively unless 
+    we've solved
+    */
+
+    let temp_length = Object.keys(blanks).length
+
+    // iterate over blanks from left to right
+    for(const [index, candidates] of Object.entries(blanks)){
+        // if current blank is a pair we've already looked at, we continue
+        if(visited_pairs.indexOf(index) !== -1) continue
+        // if current blank is not two index, we continue
+        if(blanks[index].length !== 2) continue
+
+
+        // mark down this new pair we are visiting
+        visited_pairs.push(index)
+
+
+        // not sure what params are exactly required for two funcs below
+        // if change in blanks length is detected after any 3 of these then trigger recursive call
+        scanRow(index, vals, blanks)
+        if(temp_length !== Object.keys(blanks).length) return deduceFromPairs(blanks, vals, visited_pairs)
+        // scanCol(index, vals, blanks)
+        // if(temp_length !== Object.keys(blanks).length) return deduceFromPairs(blanks, vals, visited_pairs)
+        // scanBox(index, vals, blanks)
+        // if(temp_length !== Object.keys(blanks).length) return deduceFromPairs(blanks, vals, visited_pairs)
+    }
+    console.log('PROGRESS FROM OBSERVING PAIRS (in rows for now)')
+    console.log(blanks)
+    return true
+}
+
+function scanRow(index, vals, blanks){
+    // iterate over all other blanks in the same row as index
+    // if candidate array differs but one or two nums appears, store a temp version with it removed
+    // if none have the same candidate array as index return
+    // otherwise mark pair as true => sub in temp values
+    let pair = false
+    let offset = index%9
+    let start = index- offset
+    let temp = {}
+    // iterate over row
+    for(let i =start; i<start+9;i++){
+        // skip self
+        if(i===index) continue
+        // if this space is not blank continue
+        if(blanks[i] === undefined) continue
+        // mark pair true if pair found
+        if(blanks[i][0] === blanks[index][0] && blanks[i][1] === blanks[index][1]) {
+            pair = true
+            continue
+        }
+        // if either of the index values are found, remove from temp[0]
+        let temp_vals = [...blanks[i]]
+        let temp_length =  blanks[i].length
+        let has_first = temp_vals.indexOf(blanks[index][0])
+        if(has_first !== -1){temp_vals.splice(has_first,1)}
+        let has_second = temp_vals.indexOf(blanks[index][1])
+        if(has_second !== -1){temp_vals.splice(has_second,1)}
+        // if at least one was found, add to temp
+        if(temp_vals.length !== temp_length) temp[`${i}`] = temp_vals
+    }
+
+    /* 
+    If a pair was found in the row and there exists temp values
+    then we sub those ALL in. If that sub caused one or more 
+    blanks to be dropped, we recursively call
+    */
+    if(pair && Object.keys(temp).length !== 0){
+        for(const [index, candidates] of Object.entries(temp)){
+            blanks[index] = temp[index]
+            if(blanks[index].length === 1){
+                vals[index] = blanks[index][0]
+                delete blanks[index]
+                if(Object.keys(blanks).length === 0) return true
+            }
+        }
+    }
+    return true
 }
 
 function furtherReduce(blanks, vals){
@@ -93,6 +225,8 @@ function furtherReduce(blanks, vals){
     // check boxes for pairs- if found remove any other appearances of pair values in box
 
 }
+
+// TODO: move these last functions into a separate file for helper funcs then import here
 
 // given an index and its current candidates, iterate through its row to remove values
 function checkRow(index, vals, candidates){
