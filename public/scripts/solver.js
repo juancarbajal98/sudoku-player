@@ -27,6 +27,7 @@ Solver class and specifies the method as a param (so things like the code for
 capturing form data can be generalized to class structure)
 */
 function solver_bruteForce(){
+    // TODO: nest console logs with function names
   console.log(`BRUTE FORCE STARTING`)
     // capture submitted puzzle
     const formData = new FormData(document.querySelector('form'))
@@ -124,6 +125,8 @@ function solver_eliminatePairs(vals, blanks){
         solved = deduceFromPairs(blanks, vals)
     }
 
+    // at this point if still not solved you should look for unique values in every row, col, box and apply same iterative update logic 
+
     // put values back into HTML
     for(let i=0; i<vals.length; i++){
         document.getElementById(`num${i+1}`).value = vals[i]
@@ -164,11 +167,20 @@ function deduceFromPairs(blanks, vals, visited_pairs = []){
         // not sure what params are exactly required for two funcs below
         // if change in blanks length is detected after any 3 of these then trigger recursive call
         scanRow(index, vals, blanks, visited_pairs)
-        if(temp_length !== Object.keys(blanks).length) return deduceFromPairs(blanks, vals, visited_pairs)
-        // scanCol(index, vals, blanks)
-        // if(temp_length !== Object.keys(blanks).length) return deduceFromPairs(blanks, vals, visited_pairs)
-        // scanBox(index, vals, blanks)
-        // if(temp_length !== Object.keys(blanks).length) return deduceFromPairs(blanks, vals, visited_pairs)
+        // if(temp_length !== Object.keys(blanks).length) {
+        //     console.log(`RECURSIVE CALL - DEDUCE FROM PAIRS RESTARTING WITH UPDATES VALS AFTER SCANNING ROW`)
+        //     return deduceFromPairs(blanks, vals, visited_pairs)
+        // }
+        scanCol(index, vals, blanks, visited_pairs)
+        // if(temp_length !== Object.keys(blanks).length) {
+        //     console.log(`RECURSIVE CALL - DEDUCE FROM PAIRS RESTARTING WITH UPDATES VALS AFTER SCANNING COLUMN`)
+        //     return deduceFromPairs(blanks, vals, visited_pairs)
+        // }
+        scanBox(index, vals, blanks, visited_pairs)
+        if(temp_length !== Object.keys(blanks).length) {
+            console.log(`RECURSIVE CALL - DEDUCE FROM PAIRS RESTARTING WITH UPDATES VALS AFTER SCANNING BOX`)
+            return deduceFromPairs(blanks, vals, visited_pairs)
+        }
     }
     console.log('PROGRESS FROM OBSERVING PAIRS (in rows for now)')
     console.log(blanks)
@@ -177,6 +189,7 @@ function deduceFromPairs(blanks, vals, visited_pairs = []){
 }
 
 function scanRow(index, vals, blanks, visited_pairs){
+    console.log(`SCAN ROW STARTING - ${index}'s ROW BEING SCANNED FOR PAIRS`)
     // iterate over all other blanks in the same row as index
     // if candidate array differs but one or two nums appears, store a temp version with it removed
     // if none have the same candidate array as index return
@@ -209,7 +222,7 @@ function scanRow(index, vals, blanks, visited_pairs){
         // if indices don't exactly match continue
         if(blanks[i][0] !== blanks[index][0] || blanks[i][1] !== blanks[index][1]) continue
 
-        console.log(`PAIR FOUND - INDICES ${i} & ${index} ARE PAIRS`)
+        console.log(`PAIR FOUND - INDICES ${i} & ${index} ARE PAIRS : [${blanks[i][0]},${blanks[i][1]}]`)
         // at this one point we know we've found a pair
         pair = true
         // add to list of visited pairs
@@ -232,7 +245,139 @@ function scanRow(index, vals, blanks, visited_pairs){
                 delete blanks[index]
                 console.log(`PAIR DEDUCTION - INDEX ${index} HAS BEEN REDUCED TO SINGLE CANDIDATE '${vals[index]}'. UPDATE BOARD STARTING`)
                 // helper function to remove any instances of the newly added val in its row, col, box
-                updateBoard(index, vals, blanks, visited_pairs)
+                updateBoard(index, vals, blanks)
+                if(Object.keys(blanks).length === 0) return true
+            }
+        }
+    }
+    return true
+}
+
+function scanCol(index, vals, blanks, visited_pairs){
+    console.log(`SCAN COLUMN STARTING - ${index}'s COLUMN BEING SCANNED FOR PAIRS`)
+    // iterate over all other blanks in the same row as index
+    // if candidate array differs but one or two nums appears, store a temp version with it removed
+    // if none have the same candidate array as index return
+    // otherwise mark pair as true => sub in temp values
+    let pair = false
+    let offset = index%9
+    let temp = {}
+    // iterate over row
+    for(let i =0; i<9;i++){
+        // skip self or if this space is not blank continue
+        if(blanks[9*i + offset] === undefined || String(9*i + offset)===index) continue
+        /* 
+        Once we've reduced that given i is not index and is indeed a blank, we can store a temporary
+        version of its candidates that has any instances of the pair values removed. If we end up
+        finding a pair we use those values to sub into blanks, otherwise we delete the temp vals array
+        */
+        // if either or both of the index values are found, remove from temp_vals
+        let temp_vals = [...blanks[9*i + offset]]
+        let temp_length =  blanks[9*i + offset].length
+        let has_first = temp_vals.indexOf(blanks[index][0])
+        if(has_first !== -1){temp_vals.splice(has_first,1)}
+        let has_second = temp_vals.indexOf(blanks[index][1])
+        if(has_second !== -1){temp_vals.splice(has_second,1)}
+        // if at least one was found, add to temp
+        if(temp_vals.length !== temp_length) temp[`${9*i + offset}`] = temp_vals
+
+        // if this space does not have exactly two indices continue
+        if(blanks[9*i + offset].length !== 2) continue
+        // if indices don't exactly match continue
+        if(blanks[9*i + offset][0] !== blanks[index][0] || blanks[9*i + offset][1] !== blanks[index][1]) continue
+
+        console.log(`PAIR FOUND - INDICES ${9*i + offset} & ${index} ARE PAIRS : [${blanks[9*i + offset][0]},${blanks[9*i + offset][1]}]`)
+        // at this one point we know we've found a pair
+        pair = true
+        // add to list of visited pairs
+        visited_pairs.push(String(9*i + offset))
+
+        delete temp[`${9*i + offset}`]
+    }
+
+    /* 
+    If a pair was found in the column and there exists temp values
+    then we sub those ALL in. If that sub caused one or more 
+    blanks to be dropped, we recursively call
+    */
+    if(pair && Object.keys(temp).length !== 0){
+        for(const [index, candidates] of Object.entries(temp)){
+          console.log(`PAIR IMPLICATIONS - INDEX ${index} HAS ITS CANDIDATES UPDATED FROM ${JSON.stringify(blanks[index])} TO ${JSON.stringify(temp[index])}`)
+            blanks[index] = temp[index]
+            if(blanks[index].length === 1){
+                vals[index] = blanks[index][0]
+                delete blanks[index]
+                console.log(`PAIR DEDUCTION - INDEX ${index} HAS BEEN REDUCED TO SINGLE CANDIDATE '${vals[index]}'. UPDATE BOARD STARTING`)
+                // helper function to remove any instances of the newly added val in its row, col, box
+                updateBoard(index, vals, blanks)
+                if(Object.keys(blanks).length === 0) return true
+            }
+        }
+    }
+    return true
+}
+
+function scanBox(index, vals, blanks, visited_pairs){
+    console.log(`SCAN BOX STARTING - ${index}'s BOX BEING SCANNED FOR PAIRS`)
+    // iterate over all other blanks in the same row as index
+    // if candidate array differs but one or two nums appears, store a temp version with it removed
+    // if none have the same candidate array as index return
+    // otherwise mark pair as true => sub in temp values
+    let pair = false
+    let offset = index%9
+    let boxNum = getBoxNum(Math.floor(index/9), offset)
+    let start = Math.floor(boxNum/3)*2
+    let temp = {}
+    // iterate over row
+    for(let i =start; i<start+3;i++){
+        for(let j=0; j< 3;j++){
+            // skip self or if this space is not blank continue
+            if(blanks[(boxNum*3) + (i*9) + j] === undefined || String((boxNum*3) + (i*9) + j)===index) continue
+            /* 
+            Once we've reduced that given i is not index and is indeed a blank, we can store a temporary
+            version of its candidates that has any instances of the pair values removed. If we end up
+            finding a pair we use those values to sub into blanks, otherwise we delete the temp vals array
+            */
+            // if either or both of the index values are found, remove from temp_vals
+            let temp_vals = [...blanks[(boxNum*3) + (i*9) + j]]
+            let temp_length =  blanks[(boxNum*3) + (i*9) + j].length
+            let has_first = temp_vals.indexOf(blanks[index][0])
+            if(has_first !== -1){temp_vals.splice(has_first,1)}
+            let has_second = temp_vals.indexOf(blanks[index][1])
+            if(has_second !== -1){temp_vals.splice(has_second,1)}
+            // if at least one was found, add to temp
+            if(temp_vals.length !== temp_length) temp[`${(boxNum*3) + (i*9) + j}`] = temp_vals
+
+            // if this space does not have exactly two indices continue
+            if(blanks[(boxNum*3) + (i*9) + j].length !== 2) continue
+            // if indices don't exactly match continue
+            if(blanks[(boxNum*3) + (i*9) + j][0] !== blanks[index][0] || blanks[(boxNum*3) + (i*9) + j][1] !== blanks[index][1]) continue
+
+            console.log(`PAIR FOUND - INDICES ${(boxNum*3) + (i*9) + j} & ${index} ARE PAIRS : [${blanks[(boxNum*3) + (i*9) + j][0]},${blanks[(boxNum*3) + (i*9) + j][1]}]`)
+            // at this one point we know we've found a pair
+            pair = true
+            // add to list of visited pairs
+            visited_pairs.push(String((boxNum*3) + (i*9) + j))
+
+            delete temp[`${(boxNum*3) + (i*9) + j}`]
+        }
+    }
+
+    /* 
+    If a pair was found in the box and there exists temp values
+    then we sub those ALL in. If that sub caused one or more 
+    blanks to be dropped, we recursively call
+    */
+    if(pair && Object.keys(temp).length !== 0){
+        for(const [index, candidates] of Object.entries(temp)){
+          console.log(`PAIR IMPLICATIONS - INDEX ${index} HAS ITS CANDIDATES UPDATED FROM ${JSON.stringify(blanks[index])} TO ${JSON.stringify(temp[index])}`)
+            blanks[index] = temp[index]
+            if(blanks[index].length === 1){
+                vals[index] = blanks[index][0]
+                delete blanks[index]
+                console.log(`PAIR DEDUCTION - INDEX ${index} HAS BEEN REDUCED TO SINGLE CANDIDATE '${vals[index]}'. UPDATE BOARD STARTING`)
+                // helper function to remove any instances of the newly added val in its row, col, box
+                updateBoard(index, vals, blanks)
                 if(Object.keys(blanks).length === 0) return true
             }
         }
@@ -242,7 +387,7 @@ function scanRow(index, vals, blanks, visited_pairs){
 
 // TODO: move these last functions into a separate file for helper funcs then import here, as well name them better
 
-function updateBoard(new_value_index, vals, blanks, visited_pairs, new_vals=[new_value_index]){
+function updateBoard(new_value_index, vals, blanks, new_vals=[new_value_index]){
     /* 
     - given that new value has just been added, we must scan its row, col, box for any redundancies.
     - any redundancies must be removed.
@@ -260,14 +405,16 @@ function updateBoard(new_value_index, vals, blanks, visited_pairs, new_vals=[new
         // this skips all written in values, including the new index 
         if(blanks[i] === undefined) continue
         // if this index is a pair we visited we do not need to consider a third value as a possibility for this index representing a pair
-        if(visited_pairs.indexOf(String(i)) !== -1) continue
+        // if(visited_pairs.indexOf(String(i)) !== -1) continue
         // at this point it is a value we are going to check
         checked_vals.push(i)
         // if the new value does not exist in the list of candidates for this index continue
         if(blanks[i].indexOf(vals[new_value_index]) === -1) continue
 
         // at this point the current index has a candidate array that needs to be updated
-        console.log(`UPDATE FOUND - INDEX ${i} GOES FROM ${blanks[i]} TO ${blanks[i].splice(blanks[i].indexOf(vals[new_value_index]), 1)}`)
+        let temp_print = [...blanks[i]]
+        blanks[i].splice(blanks[i].indexOf(vals[new_value_index]), 1)        
+        console.log(`UPDATE FOUND - INDEX ${i} GOES FROM ${temp_print} TO ${blanks[i]}`)
         
         // if its length is now one we store for recursive call as this is now new info
         if(blanks[i].length === 1) {
@@ -282,14 +429,16 @@ function updateBoard(new_value_index, vals, blanks, visited_pairs, new_vals=[new
         // this skips all written in values, including the new index 
         if(blanks[9*i + offset] === undefined) continue
         // if this index is a pair we visited we do not need to consider a third value as a possibility for this index representing a pair
-        if(visited_pairs.indexOf(String(9*i + offset)) !== -1) continue
+        // if(visited_pairs.indexOf(String(9*i + offset)) !== -1) continue
         // at this point it is a value we are going to check
         checked_vals.push(9*i + offset)
         // if the new value does not exist in the list of candidates for this index continue
         if(blanks[9*i + offset].indexOf(vals[new_value_index]) === -1) continue
 
         // at this point the current index has a candidate array that needs to be updated
-        console.log(`UPDATE FOUND - INDEX ${9*i + offset} GOES FROM ${blanks[9*i + offset]} TO ${blanks[9*i + offset].splice(blanks[9*i + offset].indexOf(vals[new_value_index]), 1)}`)
+        let temp_print = [...blanks[9*i + offset]]
+        blanks[9*i + offset].splice(blanks[9*i + offset].indexOf(vals[new_value_index]), 1)        
+        console.log(`UPDATE FOUND - INDEX ${9*i + offset} GOES FROM ${temp_print} TO ${blanks[9*i + offset]}`)
 
         // if its length is now one we store for recursive call as this is now new info
         if(blanks[9*i + offset].length === 1) {
@@ -300,15 +449,17 @@ function updateBoard(new_value_index, vals, blanks, visited_pairs, new_vals=[new
 
     // box - skip all row and col values you've already checked
     console.log(`CANDIDATE UPDATE - STARTING ${new_value_index}'S BOX UPDATE`)
-    let row = Math.floor(new_value_index/9)
-    let boxNum = getBoxNum(row, offset)
+    let boxNum = getBoxNum(Math.floor(new_value_index/9), offset)
     start = Math.floor(boxNum/3)*2
     for(let i =start; i<start+3;i++){
         for(let j=0; j< 3;j++){
             // this skips all written in values, including the new index 
             if(blanks[(boxNum*3) + (i*9) + j] === undefined) continue
+
+            // BELOW LOGIC TURNED OUT TO BE INCORRECT
             // if this index is a pair we visited we do not need to consider a third value as a possibility for this index representing a pair
-            if(visited_pairs.indexOf(String((boxNum*3) + (i*9) + j)) !== -1) continue
+            // if(visited_pairs.indexOf(String((boxNum*3) + (i*9) + j)) !== -1) continue
+            
             // skip all row and col values in box we've already checked
             if(checked_vals.indexOf((boxNum*3) + (i*9) + j) !== -1) continue
 
@@ -317,8 +468,9 @@ function updateBoard(new_value_index, vals, blanks, visited_pairs, new_vals=[new
             if(blanks[(boxNum*3) + (i*9) + j].indexOf(vals[new_value_index]) === -1) continue
     
             // at this point the current index has a candidate array that needs to be updated
-            console.log(`UPDATE FOUND - INDEX ${(boxNum*3) + (i*9) + j} GOES FROM ${blanks[(boxNum*3) + (i*9) + j]} TO ${blanks[(boxNum*3) + (i*9) + j].splice(blanks[(boxNum*3) + (i*9) + j].indexOf(vals[new_value_index]), 1)}`)
-            
+            let temp_print = [...blanks[(boxNum*3) + (i*9) + j]]
+            blanks[(boxNum*3) + (i*9) + j].splice(blanks[(boxNum*3) + (i*9) + j].indexOf(vals[new_value_index]), 1)        
+            console.log(`UPDATE FOUND - INDEX ${(boxNum*3) + (i*9) + j} GOES FROM ${temp_print} TO ${blanks[(boxNum*3) + (i*9) + j]}`)            
     
             // if its length is now one we store for recursive call as this is now new info
             if(blanks[(boxNum*3) + (i*9) + j].length === 1) {
@@ -337,7 +489,7 @@ function updateBoard(new_value_index, vals, blanks, visited_pairs, new_vals=[new
         vals[new_vals[0]] = blanks[new_vals[0]][0]
         delete blanks[new_vals[0]]
         // recursive call
-        return updateBoard(new_vals[0], vals, blanks, visited_pairs, new_vals)
+        return updateBoard(new_vals[0], vals, blanks, new_vals)
     }
     return true
 }
