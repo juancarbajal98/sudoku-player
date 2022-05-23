@@ -1,3 +1,105 @@
+class Solver{
+  constructor(){
+    this.solved = false
+    this.vals = new Array(81).fill(0)
+    this.blanks = {}
+  }
+
+  solver_bruteForce(){
+    console.log(`BRUTE FORCE STARTING - THERE ARE ${Object.keys(this.blanks).length} BLANKS TO BEGIN WITH`)
+    while(!this.solved){ this.solved = this.bruteForceUpdate() }
+    this.printValsToBoard()
+  }
+
+  solver_eliminatePairs(){
+    console.log(`solver_eliminatePairs Method from sudokuPlayer parent class called`)
+  }
+
+  bruteForceUpdate(){
+    let init_num_of_blanks = Object.keys(this.blanks).length
+    // for every given blank index and dimension, we check its row, col or box to remove any found candidates
+    for(const [index, candidates] of Object.entries(this.blanks)){
+      this.bruteForce_Scan(index, 'row')
+      this.bruteForce_Scan(index, 'col')
+      this.bruteForce_Scan(index, 'box')
+      // after brute force scans, check for deduce candidates
+      if(this.blanks[index].length === 1){
+        this.deleteBlank(index)
+        if(Object.keys(this.blanks).length === 1) return true
+        break
+      }
+    }
+
+    if(init_num_of_blanks === Object.keys(this.blanks).length){
+      console.log('PUZZLE NOT SOLVABLE - RETURNING WHAT WAS FOUND')
+      console.log(this.blanks)
+      console.log(Object.keys(this.blanks).length)
+
+      return true
+    }
+
+    console.log(`RECURSIVE CALL - THERE ARE ${Object.keys(this.blanks).length} BLANKS GOING INTO THE NEXT ITERATION`)
+    return this.bruteForceUpdate()
+  }
+
+  bruteForce_Scan(index, dimension){
+    let x = index %9
+    switch(dimension){
+      case 'row':
+        let start = index - x
+        for(let i=start;i<start+9;i++){ if(this.blanks[index].indexOf(this.vals[i]) !== -1) this.blanks[index].splice(this.blanks[index].indexOf(this.vals[i]), 1) }
+        break
+      case 'col':
+        for(let i=0;i<9;i++){ if(this.blanks[index].indexOf(this.vals[9*i + x]) !== -1) this.blanks[index].splice(this.blanks[index].indexOf(this.vals[9*i + x]), 1) }
+        break
+      case 'box':
+        let y = Math.floor(index/9)
+        let boxNum = getBoxNum(x,y)
+        let offset = Math.floor(boxNum/3)*2
+        for(let i=offset; i<offset+3;i++){
+          for(let j=0; j<3;j++){
+              if(this.blanks[index].indexOf(this.vals[(boxNum*3) + (i*9) + j]) !== -1) this.blanks[index].splice(this.blanks[index].indexOf(this.vals[(boxNum*3) + (i*9) + j]), 1)
+          }
+        }
+        break
+    }
+  }
+
+  /*  helper functions */
+  // returns box number given row and column (1-9 from top left-bottom right)
+  getBoxNum(row, col){
+    switch(true){
+      case ((row >= 0 && row <=2) && (col >= 0 && col <=2)):
+          return 0
+      case ((row >= 0 && row <=2) && (col >= 3 && col <=5)):
+          return 1
+      case ((row >= 0 && row <=2) && (col >= 6 && col <=8)):
+          return 2
+      case ((row >= 3 && row <=5) && (col >= 0 && col <=2)):
+          return 3
+      case ((row >= 3 && row <=5) && (col >= 3 && col <=5)):
+          return 4
+      case ((row >= 3 && row <=5) && (col >= 6 && col <=8)):
+          return 5
+      case ((row >= 6 && row <=8) && (col >= 0 && col <=2)):
+          return 6
+      case ((row >= 6 && row <=8) && (col >= 3 && col <=5)):
+          return 7
+      case ((row >= 6 && row <=8) && (col >= 6 && col <=8)):
+          return 8
+    }
+  }
+
+  // deletes a blank whose candidate has been reduced, updates val array
+  deleteBlank(index){
+    console.log(`INDEX ${index} HAS BEEN REDUCED TO SINGLE CANDIDATE '${this.blanks[index][0]}'`)
+    this.vals[index] = this.blanks[index][0]
+    delete this.blanks[index]
+  }
+
+  // update view with most up to date vals in this.vals
+  printValsToBoard(){ for(let i=0; i<this.vals.length; i++) document.getElementById(`num${i+1}`).value = this.vals[i] }
+}
 /* 
 Takes in 1d array that represents puzzle and draws it onto the grid.
 

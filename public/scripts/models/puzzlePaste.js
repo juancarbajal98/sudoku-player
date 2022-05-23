@@ -4,7 +4,7 @@ class PuzzlePaste{
     return `<!-- Puzzle Paste -->
     <div class="paste">
       <input type="text" id="pasteText">
-      <button id="pasteButton" onclick="pasteToGrid()">Apply</button>
+      <button id="pasteButton">Apply</button>
     </div>`
   }
 }
