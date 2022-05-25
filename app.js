@@ -17,3 +17,7 @@ app.listen(port, hostname, () => {
 app.get('/', (req, res) => {
     res.render('index.html')
 })
+
+app.get('/solution-checker', (req, res) => {
+    res.render('solutionChecker.html')
+})
