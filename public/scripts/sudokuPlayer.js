@@ -17,8 +17,9 @@ class SudokuPlayer extends Puzzle{
   }
 
   addListeners(){
-    document.getElementById('bruteForce1Button').addEventListener("click", () => {this.solver("BF")})
-    document.getElementById('eliminatePairs1Button').addEventListener("click", () => {this.solver("EP")})
+    document.getElementById('bruteForceResultButton').addEventListener("click", () => {this.solver("BF")})
+    document.getElementById('eliminatePairsResultButton').addEventListener("click", () => {this.solver("EP")})
+    document.getElementById('uniqueCandidateResultButton').addEventListener("click", () => {this.solver("UC")})
     document.getElementById('pasteButton').addEventListener("click", () => {this.pasteToGrid()})
   }
 

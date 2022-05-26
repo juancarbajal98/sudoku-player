@@ -1,25 +1,29 @@
 class Puzzle{
   constructor(){
-    this.solved = false
     this.vals = new Array(81).fill(0)
     this.blanks = {}
   }
 
   solver(method){
+    this.solved = false
     console.log(`${method} STARTING - THERE ARE ${Object.keys(this.blanks).length} BLANKS TO BEGIN WITH`)
     while(!this.solved){
-        switch(method){
-            case 'BF':
-                const bf_solver = new BruteForce(this)
-                this.solved = bf_solver.update()
-                break
-            case 'EP':
-                const ep_solver = new EliminatePairs(this)
-                this.solved = ep_solver.update()
-                break
-        }
+      switch(method){
+        case 'BF':
+          const bf_solver = new BruteForce(this)
+          this.solved = bf_solver.update()
+          break
+        case 'EP':
+            const ep_solver = new EliminatePairs(this)
+            this.solved = ep_solver.update()
+            break
+        case 'UC':
+            const uc_solver = new UniqueCandidate(this)
+            this.solved = uc_solver.update()
+            break
+      }
     }
-    if(Object.keys(this.blanks).length !==0) this.solved = false
+    // if(Object.keys(this.blanks).length !==0) this.solved = false
     this.printValsToBoard()
   }
 
