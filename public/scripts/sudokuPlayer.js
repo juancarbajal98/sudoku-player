@@ -21,15 +21,16 @@ class SudokuPlayer extends Puzzle{
     document.getElementById('eliminatePairsResultButton').addEventListener("click", () => {this.solver("EP")})
     document.getElementById('uniqueCandidateResultButton').addEventListener("click", () => {this.solver("UC")})
     document.getElementById('pasteButton').addEventListener("click", () => {this.pasteToGrid()})
+    document.getElementById('copyButton').addEventListener("click", () => {this.copyGrid()})
   }
 
-/* 
-Takes in 1d array that represents puzzle and draws it onto the grid.
-
-Note: the input array follows a very specific format in order for this to work:
-no spaces must exist, blanks must be represented by two single quotes, and there 
-should not be any newlines
-*/  /* 
+  /* 
+  Takes in 1d array that represents puzzle and draws it onto the grid.
+  
+  Note: the input array follows a very specific format in order for this to work:
+  no spaces must exist, blanks must be represented by two single quotes, and there 
+  should not be any newlines
+  */  /* 
   for now this is being treated as an initializer - the solvers
   are going on the assumption that blanks and vals were set 
   from this button switch 
@@ -37,18 +38,19 @@ should not be any newlines
   pasteToGrid(){
     console.log(`PASTE TO GRID CALLED`)
     if(this.vals.indexOf(0) === -1) new Puzzle()
-    // input from line gathered
-    let input = document.getElementById('pasteText').value
-    input = input.substring(1,input.length-1).split(',')
-    for(let i = 0; i <81;i++){
-      if(input[i]==="''"){
-        this.vals[i] = ''
-        this.blanks[i] = [1,2,3,4,5,6,7,8,9]
-        continue
-      }
-      this.vals[i] = parseInt(input[i].substring(1,2))
-    }
+    this.processInput()
     this.printValsToBoard()
+  }
+
+  copyGrid(){
+    console.log(`COPY GRID CALLED`)
+    let puzzle_string = `[`
+    for(let v of this.vals){
+      puzzle_string += `'${v}',`
+    }
+    puzzle_string = puzzle_string.substring(0, puzzle_string.length -1)
+    puzzle_string += `]`
+    navigator.clipboard.writeText(puzzle_string)
   }
 
   content(){
@@ -60,7 +62,4 @@ should not be any newlines
     return h
   }
 
-  get body(){
-    return document.getElementsByTagName('body')[0]
-  }
 }

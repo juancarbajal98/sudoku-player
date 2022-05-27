@@ -5,6 +5,8 @@ class PuzzlePaste{
     <div class="paste">
       <input type="text" id="pasteText">
       <button id="pasteButton">Apply</button>
-    </div>`
+    </div>
+    <button id="copyButton">Copy</button>
+    `
   }
 }

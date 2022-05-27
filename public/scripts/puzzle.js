@@ -71,8 +71,26 @@ class Puzzle{
       return true
   }
 
+  // gets values from input tag, assigns vals and blanks
+  processInput(){
+     // input from line gathered
+     let input = document.getElementById('pasteText').value
+     input = input.substring(1,input.length-1).split(',')
+     for(let i = 0; i <81;i++){
+       if(input[i]==="''"){
+         this.vals[i] = ''
+         this.blanks[i] = [1,2,3,4,5,6,7,8,9]
+         continue
+       }
+       this.vals[i] = parseInt(input[i].substring(1,2))
+     }
+  }
+
   // update view with most up to date vals in this.vals
   printValsToBoard(){ for(let i=0; i<this.vals.length; i++) document.getElementById(`num${i+1}`).value = this.vals[i] }
+
+  // return body tag
+  get body(){ return document.getElementsByTagName('body')[0] }
 }
 
 breezyPuzzle = 
