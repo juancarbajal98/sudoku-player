@@ -13,6 +13,7 @@ class BruteForce extends Method{
       // after brute force scans, check for deduce candidates
       if(this.blanks[index].length === 1){
         this.puzzle.deleteBlank(index)
+        this.puzzle.printValsToBoard()
         if(Object.keys(this.blanks).length === 0) return true
         break
       }

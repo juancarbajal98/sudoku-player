@@ -93,7 +93,8 @@ class EliminatePairs extends Method{
         this.blanks[index] = temp[index]
         if(this.blanks[index].length === 1){
           this.puzzle.deleteBlank(index)
-          this.updateBoard_newValue(index)
+          this.puzzle.printValsToBoard()
+          this.updateBoardCandidates_newValue(index)
           if(Object.keys(this.blanks).length === 0) return true
         }
     }

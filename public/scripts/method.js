@@ -14,7 +14,7 @@ class Method{
   handles candidate update - if more single candidates are found they are 
   deleted and recursive calls are handled 
   */
-  updateBoard_newValue(index, new_vals=[index]){
+  updateBoardCandidates_newValue(index, new_vals=[index]){
     let checked_vals = []
     this.updateBoard_row(index, new_vals, checked_vals)
     this.updateBoard_col(index, new_vals, checked_vals)
@@ -26,7 +26,8 @@ class Method{
     if(new_vals.length !== 0){
       // recursive call
       this.puzzle.deleteBlank(new_vals[0])
-      return this.updateBoard_newValue(new_vals[0], new_vals)
+      this.puzzle.printValsToBoard()
+      return this.updateBoardCandidates_newValue(new_vals[0], new_vals)
     }
   }
 

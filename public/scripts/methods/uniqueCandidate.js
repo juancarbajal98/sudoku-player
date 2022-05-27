@@ -10,7 +10,8 @@ class UniqueCandidate extends Method{
     this.scan_boxes(updated_vals)
     if(updated_vals.length) {
       this.puzzle.deleteBlank(updated_vals[0])
-      this.updateBoard_newValue(updated_vals[0])
+      this.puzzle.printValsToBoard()
+      this.updateBoardCandidates_newValue(updated_vals[0], updated_vals)
       return this.update()
     }
     console.log('PROGRESS FROM UNIQUE CANDIDATE SEARCH')
@@ -30,7 +31,14 @@ class UniqueCandidate extends Method{
         else {row_vals[cand].push(rowNum*9 + i)}
       }
     }
-    for(const [value, instances] of Object.entries(row_vals)) if(instances.length === 1) updated_vals.push(instances[0])
+    for(const [value, instances] of Object.entries(row_vals)) if(instances.length === 1 && updated_vals.indexOf(instances[0]) === -1) { 
+      // update candidate to unique candidate
+      this.blanks[instances[0]] = [parseInt(value)]
+      updated_vals.push(instances[0])
+      console.log(`UNIQUE CANDIDATE FOUND - INDEX ${instances[0]} HAS THE ONLY ${this.blanks[instances[0]]} IN ITS ROW`)
+    }
+
+    console.log(`ROW ${rowNum} HAS CANDIDATE VALUES ${JSON.stringify(row_vals)}`)
   }
 
   scan_cols(updated_vals){ for(let i=0;i<9;i++) this.scan_col(i, updated_vals) }
@@ -45,7 +53,13 @@ class UniqueCandidate extends Method{
         else {col_vals[cand].push(i*9 + colNum)}
       }
     }
-    for(const [value, instances] of Object.entries(col_vals)) if(instances.length === 1) updated_vals.push(instances[0])
+    for(const [value, instances] of Object.entries(col_vals)) if(instances.length === 1 && updated_vals.indexOf(instances[0]) === -1) { 
+      this.blanks[instances[0]] = [parseInt(value)]
+      updated_vals.push(instances[0])
+      console.log(`UNIQUE CANDIDATE FOUND - INDEX ${instances[0]} HAS THE ONLY ${this.blanks[instances[0]]} IN ITS COL`)
+    }
+
+    console.log(`COL ${colNum} HAS CANDIDATE VALUES ${JSON.stringify(col_vals)}`)
   }
   scan_boxes(updated_vals){ for(let i=0;i<9;i++) this.scan_box(i, updated_vals) }
 
@@ -61,6 +75,12 @@ class UniqueCandidate extends Method{
         }
       }
     }
-    for(const [value, instances] of Object.entries(box_vals)) if(instances.length === 1) updated_vals.push(instances[0])
+    for(const [value, instances] of Object.entries(box_vals)) if(instances.length === 1 && updated_vals.indexOf(instances[0]) === -1) { 
+      this.blanks[instances[0]] = [parseInt(value)]
+      updated_vals.push(instances[0])
+      console.log(`UNIQUE CANDIDATE FOUND - INDEX ${instances[0]} HAS THE ONLY ${this.blanks[instances[0]]} IN ITS BOX`)
+    }
+
+    console.log(`BOX ${boxNum} HAS CANDIDATE VALUES ${JSON.stringify(box_vals)}`)
   }
 }
