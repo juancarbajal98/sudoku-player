@@ -1,5 +1,5 @@
 const http = require('http');
-const express = require('express')
+const express = require('express');
 const app = express()
 const hostname = '127.0.0.1';
 const port = 3000;
@@ -15,9 +15,13 @@ app.listen(port, hostname, () => {
 });
 
 app.get('/', (req, res) => {
-    res.render('index.html')
+  res.render('index.html')
 })
 
 app.get('/solution-checker', (req, res) => {
-    res.render('solutionChecker.html')
+  res.render('solutionChecker.html')
+})
+
+app.get('/nyt', (req, res) => {
+  res.render('nyt.html')
 })
