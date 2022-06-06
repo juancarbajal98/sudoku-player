@@ -11,7 +11,10 @@ const port = 3000;
 app.use(express.static('public'))
 
 app.set('views', __dirname + '/public/views/');
-app.engine('html', require('ejs').renderFile); 
+// app.engine('html', require('ejs').renderFile); 
+
+// set the view engine to ejs
+app.set('view engine', 'ejs');
 
 app.listen(port, hostname, () => {
   console.log(`Server running at http://${hostname}:${port}/`);
@@ -44,7 +47,7 @@ app.get('/nyt', async (req, res) => {
   try{
     const puzzle_data = await nytPuzzleScraper()
     // TODO: GET EJS TEMPLATING SET UP TO RENDER DYNAMIC PAGES
-    res.render('nyt.html', {puzzle_data})
+    res.render('nyt', {puzzle_data})
   } 
   catch (err) {
     return res.status(500).json({

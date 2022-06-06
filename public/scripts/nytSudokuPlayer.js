@@ -1,6 +1,5 @@
 class NYTSudokuPlayer extends Puzzle{
   constructor(){
-    const puppeteer = require('puppeteer');
     super()
     this.init()
   }
@@ -13,16 +12,13 @@ class NYTSudokuPlayer extends Puzzle{
   }
 
   async draw(){ 
-    debugger
-    const browser = await puppeteer.launch({})
-    const page = await browser.newPage()
-  
-    await page.goto('https://www.nytimes.com/puzzles/sudoku/easy')
-    var element = await page.waitFor('#pz-game-root > div.su-app > div > div.su-app__play > div > div > div')
-    var text = await page.evaluate(element => element.textContent, element)
-    console.log(text)
-    browser.close()
-    this.body.innerHTML += this.content() }
+    // scrape data from p tag and delete it
+    let puzzle_data = JSON.parse(document.getElementById('puzzle_data').innerHTML)
+    document.getElementById('puzzle_data').remove()
+
+    // draw content 
+    this.body.innerHTML += this.content() 
+  }
 
   addListeners(){}
 
