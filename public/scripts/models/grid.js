@@ -1,6 +1,4 @@
 class Grid {
-  constructor(){}
-
   static html(){
     let temp = new Grid
     let grid = `<!-- Board -->

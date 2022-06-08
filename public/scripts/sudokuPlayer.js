@@ -38,7 +38,9 @@ class SudokuPlayer extends Puzzle{
   pasteToGrid(){
     console.log(`PASTE TO GRID CALLED`)
     if(this.vals.indexOf(0) === -1) new Puzzle()
-    this.processInput()
+    let input = document.getElementById('pasteText').value
+    input = input.substring(1,input.length-1).split(',')
+    this.assignPuzzleValues(input)
     this.printValsToBoard()
   }
 

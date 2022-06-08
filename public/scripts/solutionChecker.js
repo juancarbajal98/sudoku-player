@@ -24,7 +24,7 @@ class SolutionChecker extends Puzzle{
     // process values
     console.log(`CHECK PUZZLE CALLED`)
     if(this.vals.indexOf(0) === -1) new Puzzle()
-    this.processInput()
+    this.assignPuzzleValues()
     this.printValsToBoard()
     // check for validity 
     

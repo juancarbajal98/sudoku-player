@@ -62,6 +62,13 @@ class Puzzle{
     }
   }
 
+  // TODO: get this wrapper working properly
+  // adds event to button with id, using given function 
+  // clickListener(id, callback){ 
+  //   debugger
+  //   document.getElementById(id).addEventListener("click", callback(id)) 
+  // }
+
   // stores the index of a pair that has not been previously scanned
   newFoundPair(index, visited_pairs){
       if(visited_pairs.indexOf(index) !== -1) return false
@@ -72,17 +79,15 @@ class Puzzle{
   }
 
   // gets values from input tag, assigns vals and blanks
-  processInput(){
-     // input from line gathered
-     let input = document.getElementById('pasteText').value
-     input = input.substring(1,input.length-1).split(',')
+  assignPuzzleValues(vals){
      for(let i = 0; i <81;i++){
-       if(input[i]==="''"){
+       if(vals[i]==="''" || vals[i]==="0"){
          this.vals[i] = ''
          this.blanks[i] = [1,2,3,4,5,6,7,8,9]
          continue
        }
-       this.vals[i] = parseInt(input[i].substring(1,2))
+       // TODO generalize param for parseInt (atm vals[i] doesn't work in some cases, requires substring)
+       this.vals[i] = parseInt(vals[i])
      }
   }
 

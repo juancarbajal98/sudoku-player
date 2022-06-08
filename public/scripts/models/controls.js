@@ -1,6 +1,4 @@
 class Controls{
-  constructor(){}
-  
   static html(){
     return ` <!-- Controls --> 
     <div class ="methodControls" id="bruteForceControls">

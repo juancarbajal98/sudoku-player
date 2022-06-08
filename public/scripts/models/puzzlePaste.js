@@ -1,5 +1,4 @@
 class PuzzlePaste{
-  constructor(){}
   static html(){
     return `<!-- Puzzle Paste -->
     <div class="paste">
