@@ -5,35 +5,26 @@ class SudokuPlayer extends Puzzle{
   }
 
   init(){
-    // await for drawing to be done to add listeners
     this.draw()
-    .then(unused => {
-      this.addListeners()
-    })
+    .then(unused => { this.addListeners() })
   }
 
-  async draw(){
-    this.body.innerHTML += this.content()
-  }
+  async draw(){ this.body.innerHTML += this.content() }
 
   addListeners(){
-    document.getElementById('bruteForceResultButton').addEventListener("click", () => {this.solver("BF")})
-    document.getElementById('eliminatePairsResultButton').addEventListener("click", () => {this.solver("EP")})
-    document.getElementById('uniqueCandidateResultButton').addEventListener("click", () => {this.solver("UC")})
-    document.getElementById('pasteButton').addEventListener("click", () => {this.pasteToGrid()})
-    document.getElementById('copyButton').addEventListener("click", () => {this.copyGrid()})
+    this.clickListener('bruteForceResultButton', () => {this.solver("BF")})
+    this.clickListener('eliminatePairsResultButton', () => {this.solver("EP")})
+    this.clickListener('uniqueCandidateResultButton', () => {this.solver("UC")})
+    this.clickListener('pasteButton', () => {this.pasteToGrid()})
+    this.clickListener('copyButton', () => {this.copyGrid()})
   }
 
   /* 
   Takes in 1d array that represents puzzle and draws it onto the grid.
   
   Note: the input array follows a very specific format in order for this to work:
-  no spaces must exist, blanks must be represented by two single quotes, and there 
+  no spaces must exist, blanks must be represented by zeroes, and there 
   should not be any newlines
-  */  /* 
-  for now this is being treated as an initializer - the solvers
-  are going on the assumption that blanks and vals were set 
-  from this button switch 
   */
   pasteToGrid(){
     console.log(`PASTE TO GRID CALLED`)
@@ -63,5 +54,4 @@ class SudokuPlayer extends Puzzle{
     h += Controls.html()
     return h
   }
-
 }

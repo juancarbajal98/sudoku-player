@@ -36,7 +36,7 @@ class NYTSudokuPlayer extends Puzzle{
     this.assignPuzzleValues(puzzle)
   }
 
-  addListeners(){ for(let diff of ['easy','medium', 'hard']) document.getElementById(`nytControls-${diff}`).addEventListener("click", () => {this.redraw(diff)}) }
+  addListeners(){ for(let diff of ['easy','medium', 'hard']) this.clickListener(`nytControls-${diff}`, () => {this.redraw(diff)})
 
   redraw(difficulty){
     this.setPuzzleData(difficulty)

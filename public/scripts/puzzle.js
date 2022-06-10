@@ -23,7 +23,6 @@ class Puzzle{
             break
       }
     }
-    // if(Object.keys(this.blanks).length !==0) this.solved = false
     this.printValsToBoard()
   }
 
@@ -62,12 +61,8 @@ class Puzzle{
     }
   }
 
-  // TODO: get this wrapper working properly
   // adds event to button with id, using given function 
-  // clickListener(id, callback){ 
-  //   debugger
-  //   document.getElementById(id).addEventListener("click", callback(id)) 
-  // }
+  clickListener(id, callback){ document.getElementById(id).addEventListener("click", () => {callback()}) }
 
   // stores the index of a pair that has not been previously scanned
   newFoundPair(index, visited_pairs){
