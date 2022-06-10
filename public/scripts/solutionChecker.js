@@ -41,4 +41,5 @@ class SolutionChecker extends Puzzle{
   }
 }
 
+// TODO finish endpoint
 let check = new SolutionChecker()

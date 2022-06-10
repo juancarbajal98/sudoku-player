@@ -5,13 +5,16 @@ class NYTSudokuPlayer extends Puzzle{
   }
 
   /* 
-  We require puzzle data first to draw the dynamic nytIntro
+  We require puzzle data first to draw the dynamic nytIntro, defaulting to easy for now
   */
   init(){
     this.getPuzzleData()
-    .then(unused => { this.draw()})
-    .then(unused => { this.setPuzzleData()})
-    .then(unused => { this.addListeners()})
+    .then(unused => { 
+      this.setPuzzleData('easy')
+      this.drawTemplate('easy')
+      this.printValsToBoard()
+      this.addListeners()
+    })
   }
 
   async getPuzzleData(){
@@ -20,31 +23,31 @@ class NYTSudokuPlayer extends Puzzle{
     document.getElementById('puzzle_data').remove()
   }
 
-  draw(){ 
-    // write content to DOM
-    this.body.innerHTML += this.content() 
+  drawTemplate(difficulty){ 
+    // write template content to DOM
+    this.body.innerHTML = this.content(difficulty) 
   }
 
-  setPuzzleData(difficulty=null){
-    debugger
-    // assign fetched values and print to board
-    let temp = difficulty ? this.puzzle_data[`${difficulty}`].puzzle_data.puzzle : this.puzzle_data.easy.puzzle_data.puzzle
-    let input = JSON.stringify(temp)
-    input = input.substring(1, input.length-1).split(',')
-    this.assignPuzzleValues(input)
+  setPuzzleData(difficulty){
+    // assign fetched values
+    let puzzle = JSON.stringify(this.puzzle_data[`${difficulty}`].puzzle_data.puzzle)
+    puzzle = puzzle.substring(1, puzzle.length-1).split(',')
+    console.log(puzzle)
+    this.assignPuzzleValues(puzzle)
+  }
+
+  addListeners(){ for(let diff of ['easy','medium', 'hard']) document.getElementById(`nytControls-${diff}`).addEventListener("click", () => {this.redraw(diff)}) }
+
+  redraw(difficulty){
+    this.setPuzzleData(difficulty)
+    this.drawTemplate(difficulty)
     this.printValsToBoard()
+    this.addListeners()
   }
 
-  addListeners(){
-    // TODO: figure out how to update dynamic intro on click
-    document.getElementById('nytControls-easy').addEventListener("click", () => {this.setPuzzleData('easy')}) 
-    document.getElementById('nytControls-medium').addEventListener("click", () => {this.setPuzzleData('medium')}) 
-    document.getElementById('nytControls-hard').addEventListener("click", () => {this.setPuzzleData('hard')}) 
-  }
-
-  content(){
+  content(difficulty){
     let h = ``
-    h += NYTIntro.html(this.puzzle_data) // render dynamic intro
+    h += NYTIntro.html(this.puzzle_data, difficulty) // render dynamic intro
     h += Grid.html()
     h += Inputs.html()
     h += NYTControls.html()
