@@ -16,6 +16,11 @@ body{
     position: absolute;
 }
 
+/* 
+TODO fix small styling issue causing any boxes in cols 4-9 to be slightly off-centered
+for failing to consider the difference in borders (i.e. the thicker line after cols 3, 6)
+*/
+
 .line.h{
     height:1px;
     width: 100%;
@@ -40,19 +45,31 @@ form{
 }
 
 .row{
-    width: 100%;
-    height: calc(100% / 9);
+  width: 100%;
+  height: calc(100% / 9);
+  display: flex;
 }
+
+.box{
+  display: flex;
+  font-size: 48px;
+  height: 1em;
+  width: 1em;
+  overflow: hidden;
+}
+
+.box .container{
+  font-size: 10px;
+  line-break: anywhere;
+}
+
 .input{
-    font-size: 30px;
-    /* position: absolute; */
-    border: none;
-    height: 1em;
-    width: 1em;
-    left: 0;
-    margin: 0.3em;
-    padding: 0;
-    text-align: center;
+  font-size: 30px;
+  border: none;
+  height: 100%;
+  width: 100%;
+  text-align: center;
+  padding: 0;
 }
 
 .input:focus{

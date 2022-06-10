@@ -33,6 +33,7 @@ class SudokuPlayer extends Puzzle{
     input = input.substring(1,input.length-1).split(',')
     this.assignPuzzleValues(input)
     this.printValsToBoard()
+    this.printCandidatesToBoard()
   }
 
   copyGrid(){
@@ -49,6 +50,10 @@ class SudokuPlayer extends Puzzle{
   content(){
     let h = ``
     h += Grid.html()
+    /* 
+    TODO instead of sticking in 81 input tags from the start, just draw the blank grid (line above) and then build up the 
+    inputs accordingly depending on the puzzle provided
+    */
     h += Inputs.html()
     h += PuzzlePaste.html()
     h += Controls.html()

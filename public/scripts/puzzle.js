@@ -83,11 +83,23 @@ class Puzzle{
        }
        this.vals[i] = parseInt(vals[i])
      }
-     console.log(this.blanks)
   }
 
   // update view with most up to date vals in this.vals
   printValsToBoard(){ for(let i=0; i<this.vals.length; i++) document.getElementById(`num${i+1}`).value = this.vals[i] }
+
+  // update view with most up to date candidates in this.blanks
+  printCandidatesToBoard(){
+    for(const [index, candidates] of Object.entries(this.blanks)){
+      let box_tag = document.querySelector(`#box${parseInt(index)+1}`)
+      box_tag.classList.add("candidate")
+      let candidate_box = ``
+      candidate_box += `<div class="container">`
+      candidate_box += JSON.stringify(candidates)
+      candidate_box += `</div>`
+      box_tag.innerHTML = candidate_box
+    }
+  }
 
   // return body tag
   get body(){ return document.getElementsByTagName('body')[0] }

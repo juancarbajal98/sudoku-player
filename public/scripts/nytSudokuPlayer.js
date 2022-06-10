@@ -32,11 +32,10 @@ class NYTSudokuPlayer extends Puzzle{
     // assign fetched values
     let puzzle = JSON.stringify(this.puzzle_data[`${difficulty}`].puzzle_data.puzzle)
     puzzle = puzzle.substring(1, puzzle.length-1).split(',')
-    console.log(puzzle)
     this.assignPuzzleValues(puzzle)
   }
 
-  addListeners(){ for(let diff of ['easy','medium', 'hard']) this.clickListener(`nytControls-${diff}`, () => {this.redraw(diff)})
+  addListeners(){ for(let diff of ['easy','medium', 'hard']) this.clickListener(`nytControls-${diff}`, () => {this.redraw(diff)})}
 
   redraw(difficulty){
     this.setPuzzleData(difficulty)
