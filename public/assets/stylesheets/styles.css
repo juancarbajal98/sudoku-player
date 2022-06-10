@@ -76,25 +76,34 @@ form{
 }
 
 /* controls */
-
-#bruteForceControls{
+.methodControls{
   width: 50%;
   margin: 2em auto;
-  border: 2px solid rebeccapurple;
   padding: 2em;
+
+}
+
+#bruteForceControls{
+  border: 2px solid rebeccapurple;
 }
 
 #bruteForceControls button{
-    margin: 0 10%;
+  margin: 0 10%;
 }
 
 #eliminatePairsControls{
-  width: 50%;
-  margin: 2em auto;
   border: 2px solid rgb(76, 231, 89);
-  padding: 2em;
 }
 
 #eliminatePairsControls button{
-    margin: 0 8%;
+  margin: 0 8%;
 }
+
+#uniqueCandidateControls{
+  border: 2px solid rgb(230, 139, 55);
+}
+
+#uniqueCandidateControls button{
+  margin: 0 7%;
+}
+

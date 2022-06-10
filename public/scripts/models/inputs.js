@@ -1,6 +1,4 @@
 class Inputs{
-  constructor(){}
-
   static html(){
     let temp = new Inputs
     let inputs = `<!-- Inputs -->
