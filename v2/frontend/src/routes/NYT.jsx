@@ -1,31 +1,17 @@
 import React, {useEffect} from "react"
-import axios from 'axios'
-import cheerio from 'cheerio'
 
 // import '../styles/PuzzleScreen.css' // add this once /puzzles/nyt pattern implemented and remove styles from global
 
 const NYT = ({dispatch, state}) => {
   useEffect(() => {
-    // get puzzle data
-    let puzzleData = fetchPuzzleData()
-    // set puzzle data through dispatch
-    dispatch({type: 'setPuzzleData', puzzleData})
+    const fetchPuzzleData = async () => {
+      const response = await fetch('http://localhost:8080/nyt', {mode:'cors'})
+      const puzzleData = await response.json()
+      dispatch({type: 'setPuzzleData', puzzleData})
+    }
+    fetchPuzzleData().catch(console.error);
   }, [])
 
-  const fetchPuzzleData = async () => {
-    let d = {}
-    const url = 'https://www.nytimes.com/puzzles/sudoku';
-    debugger
-    await axios(url).then((response) => {
-      debugger
-      const $ = cheerio.load(response.data);
-      var html_data = $('script', '#js-hook-game-wrapper').text()
-      html_data = html_data.substring(html_data.indexOf('{'))
-      debugger
-      for(const [key, value] of Object.entries(JSON.parse(html_data))){ d[key] = value }
-    });
-    return d
-  }
   
     
     return (
