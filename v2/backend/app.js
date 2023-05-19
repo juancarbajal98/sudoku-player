@@ -13,7 +13,7 @@ app.get('/nyt', (req, res) => {
     // read response
     const $ = cheerio.load(response.data)
     let puzzleData = {}
-    var htmlData = $('script', '#js-hook-game-wrapper').text()
+    let htmlData = $('script', '#js-hook-game-wrapper').text()
 
     // parse response
     htmlData = htmlData.substring(htmlData.indexOf('{'))
@@ -26,6 +26,6 @@ app.get('/nyt', (req, res) => {
   .catch(err => next(err))
 })
 
-app.listen(8080, () => {
-    console.log('listening on port 8080')
+app.listen(3001, () => {
+    console.log('listening on port 3001')
 })

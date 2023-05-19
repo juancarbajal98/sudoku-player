@@ -15,6 +15,19 @@ const reducer = (state, action) => {
           ...state,
           puzzleData: action.puzzleData
         }
+
+      case 'setNYTPuzzleDifficulty':
+        return {
+          ...state,
+          puzzleData: {
+            ...state.puzzleData,
+            nyt: {
+              ...state.puzzleData.nyt,
+              selectedDifficulty: action.difficulty
+            }
+          }
+        }
+        
       default:
         throw new Error()
     }
