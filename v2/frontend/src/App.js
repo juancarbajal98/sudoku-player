@@ -17,8 +17,8 @@ const App = () => {
                 <Route path="">
                 {/* <Route path="/" element={<Layout />}> */}
                     {AppRoutes.map((r, i) => {
-                        return r.name === 'Home' ? <Route index key={i} element={React.createElement(r.component, {dispatch: dispatch, state: state})} /> :
-                            <Route path={r.path} key={i} element={React.createElement(r.component, {dispatch: dispatch, state: state})} />
+                        return r.name === 'Home' ? <Route index key={i} element={React.createElement(r.component, {dispatch, state})} /> :
+                            <Route path={r.path} key={i} element={React.createElement(r.component, {dispatch, state})} />
                     })}
                 </Route>
             </Routes>

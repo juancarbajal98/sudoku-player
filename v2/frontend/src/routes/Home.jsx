@@ -1,6 +1,5 @@
 import React from "react"
 import { NewPuzzleButton } from '../components/NewPuzzleButton'
-import '../styles/HomeScreen.css'
 
 const Home = ({ dispatch, state }) => {
 

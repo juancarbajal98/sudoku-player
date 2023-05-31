@@ -1,6 +1,8 @@
 import React, {useEffect} from "react"
 import Button from "react-bootstrap/Button";
 
+import { PuzzleGrid } from '../components/PuzzleGrid'
+
 const NYT = ({dispatch, state}) => {
   useEffect(() => {
     // fetch, process and dispatch puzzle data 
@@ -24,7 +26,7 @@ const NYT = ({dispatch, state}) => {
       nyt: {
         name: 'The New York Times',
         dayOfWeek: rawJson.easy.day_of_week,
-        selectedDifficulty: 'easy',
+        selectedDifficulty: 'easy', // default on init
         easy: rawJson.easy.puzzle_data,
         medium: rawJson.medium.puzzle_data,
         hard: rawJson.hard.puzzle_data,
@@ -42,9 +44,8 @@ const NYT = ({dispatch, state}) => {
           {state.puzzleData && <h3>Play {state.puzzleData.nyt.dayOfWeek}'s {state.puzzleData.nyt.selectedDifficulty} sudoku puzzle by {state.puzzleData.nyt.name}.</h3>}
         </div>
 
-        <div className='grid'>
-          {state.puzzleData && <p>{state.puzzleData.nyt[`${state.puzzleData.nyt.selectedDifficulty}`].puzzle}</p>}
-        </div>
+        {state.puzzleData && <PuzzleGrid data={state.puzzleData} dispatch={dispatch} />}
+        {/* {state.puzzleData && <p>{state.puzzleData.nyt[`${state.puzzleData.nyt.selectedDifficulty}`].puzzle}</p>} */}
 
         <div className='inputs'>
           <Button tabIndex='0' name='easy' onClick={(e) => {changeDifficulty(e)}}>Easy</Button>

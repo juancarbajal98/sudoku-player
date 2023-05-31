@@ -1,3 +1,63 @@
+/* ROUTE STYLES */
+/* TODO update to mobile first */
+.homeScreen {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  margin: 0 6em;
+}
+
+.homeScreen--title {
+  width: 1000px;
+  margin: 0 auto;
+  color: #585C69;
+}
+
+.homeScreen--title h1 {
+  text-align: center;
+  font-size: 135px;
+  line-height: 163px;
+  letter-spacing: 0.29em;
+  margin: 0;
+}
 .nytScreen{
   text-align: center;
+  align-items: center;
 }
+
+/* COMPONENT STYLES */
+.puzzleGrid{
+  width: 400px;
+  height: 400px;
+  outline: 2px solid #000000;
+  margin: 10px auto;
+  display: grid;
+
+  .rows, .cols{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+  }
+
+  .rows{
+    flex-direction: column;
+  }
+
+  .cols{
+    flex-direction: row;
+  }
+
+  .line{
+    height: 1px;
+    width: 100%;
+    background-color:#000000;
+  }
+
+  .col{
+    transform: rotate(90deg);
+  }
+}
+
