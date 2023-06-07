@@ -44,10 +44,11 @@ const NYT = ({dispatch, state}) => {
           {state.puzzleData && <h3>Play {state.puzzleData.nyt.dayOfWeek}'s {state.puzzleData.nyt.selectedDifficulty} sudoku puzzle by {state.puzzleData.nyt.name}.</h3>}
         </div>
 
-        {state.puzzleData && <PuzzleGrid data={state.puzzleData} dispatch={dispatch} />}
+        {state.puzzleData && <PuzzleGrid data={state.puzzleData} dispatch={dispatch} /> }
+
         {/* {state.puzzleData && <p>{state.puzzleData.nyt[`${state.puzzleData.nyt.selectedDifficulty}`].puzzle}</p>} */}
 
-        <div className='inputs'>
+        <div className='controls'>
           <Button tabIndex='0' name='easy' onClick={(e) => {changeDifficulty(e)}}>Easy</Button>
           <Button tabIndex='1' name='medium' onClick={(e) => {changeDifficulty(e)}}>Medium</Button>
           <Button tabIndex='2' name='hard' onClick={(e) => {changeDifficulty(e)}}>Hard</Button>
