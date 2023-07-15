@@ -28,67 +28,46 @@
 }
 
 /* COMPONENT STYLES */
-.puzzleGrid{
-  width: 450px;
-  height: 450px;
-  outline: 2.5px solid #000000;
-  margin: 10px auto;
-
-  .rows, .cols{
-    height: 450px;
-    width: 450px;
-    display: flex;
-    justify-content: space-evenly;
-  }
-
-  .rows{
-    flex-direction: column;
-    position: absolute;
-  }
-
-  .cols{
-    flex-direction: row;
-    position: relative;
-  }
-
-  .line{
-    background-color:#000000;
-  }
-
-  .line.col{
-    width: 1px;
-    height: 450px;
-  }
-  .line.row{
-    height: 1px;
-    width: 100%;
-  }
-
-  #row3, #row6{
-    height: 2.5px;
-  }
-  #col3, #col6{
-    width: 2.5px;
-  }
+.puzzleTable table{
+  margin: 1em auto;
+}
+.puzzleTable tr{
+  border-spacing: 0 !important;
 }
 
-.inputs{
-  width: 450px;
-  height: 450px;
-  margin: auto;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-  flex-wrap: wrap;
-
-  .inputElem{
-    width: 50px;
-    height: 50px;
-    border: none;
-  }
-
-  .inputElem:focus{
-    outline:none;
-  }
+.puzzleTable td{
+  height: 50px;
+  width: 50px;
+  border: 1px solid;
 }
 
+.puzzleTable td > input{
+  font-size: 20px;
+  width: 100%;
+  border: none;
+  text-align: center;
+}
+.puzzleTable td > input:focus{
+  outline:none
+}
+/* outside grid line styling */
+.puzzleTable td:first-child{
+  border-left: 4px solid;
+}
+.puzzleTable td:last-child{
+  border-right: 4px solid !important; 
+}
+.puzzleTable .row1 > td{
+  border-top: 4px solid;
+}
+.puzzleTable .row9 > td{
+  border-bottom: 4px solid;
+}
+/* interior grid line styling (one less pixel) */
+.puzzleTable td:nth-child(3n){
+  border-right: 3px solid;
+}
+.puzzleTable .row3 > td, 
+.puzzleTable .row6 > td{
+  border-bottom: 3px solid;
+}

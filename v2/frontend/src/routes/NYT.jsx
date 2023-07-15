@@ -1,15 +1,15 @@
 import React, {useEffect} from "react"
 import Button from "react-bootstrap/Button";
 
-import { PuzzleGrid } from '../components/PuzzleGrid'
+import { PuzzleTable } from '../components/PuzzleTable'
 
 const NYT = ({dispatch, state}) => {
   useEffect(() => {
     // fetch, process and dispatch puzzle data 
     fetchPuzzleJson()
     .then(puzzleJson => {
-      let puzzleData = processPuzzleData(puzzleJson)
-      dispatch({type: 'setPuzzleData', puzzleData })
+      let puzzle = processPuzzle(puzzleJson)
+      dispatch({type: 'setPuzzle', puzzle })
     })
     .catch(console.error);
   }, [])
@@ -20,34 +20,30 @@ const NYT = ({dispatch, state}) => {
     return await response.json() 
   }
   
-  const processPuzzleData = (rawJson) => {
+  const processPuzzle = (rawJson) => {
     // process data into structured puzzle format
-    let puzzleData = {
-      nyt: {
-        name: 'The New York Times',
-        dayOfWeek: rawJson.easy.day_of_week,
-        selectedDifficulty: 'easy', // default on init
-        easy: rawJson.easy.puzzle_data,
-        medium: rawJson.medium.puzzle_data,
-        hard: rawJson.hard.puzzle_data,
-      }
+    let puzzle = {
+      name: 'The New York Times',
+      dayOfWeek: rawJson.easy.day_of_week,
+      difficulty: 'easy',
+      easy: rawJson.easy.puzzle_data,
+      medium: rawJson.medium.puzzle_data,
+      hard: rawJson.hard.puzzle_data,
     }
-    return puzzleData
+    return puzzle
   }
 
-  const changeDifficulty = (e) => { dispatch({type:'setNYTPuzzleDifficulty', difficulty: e.target.name }) }
+  const changeDifficulty = (e) => { dispatch({type:'setPuzzleDifficulty', difficulty: e.target.name }) }
 
     return (
       <section className='puzzle nytScreen'>
         <div className='title'>
           <h1>Sudoku Player</h1>
-          {state.puzzleData && <h3>Play {state.puzzleData.nyt.dayOfWeek}'s {state.puzzleData.nyt.selectedDifficulty} sudoku puzzle by {state.puzzleData.nyt.name}.</h3>}
+          <h3>Play {state.puzzle ? state.puzzle.dayOfWeek : 'today'}'s {state.puzzle ? state.puzzle.difficulty : 'easy'} sudoku puzzle by {state.puzzle ? state.puzzle.name : ''}.</h3>
         </div>
 
-        {state.puzzleData && <PuzzleGrid data={state.puzzleData} dispatch={dispatch} /> }
-
-        {/* {state.puzzleData && <p>{state.puzzleData.nyt[`${state.puzzleData.nyt.selectedDifficulty}`].puzzle}</p>} */}
-
+        <PuzzleTable puzzle={state.puzzle ? state.puzzle : null} dispatch={dispatch} />
+        
         <div className='controls'>
           <Button tabIndex='0' name='easy' onClick={(e) => {changeDifficulty(e)}}>Easy</Button>
           <Button tabIndex='1' name='medium' onClick={(e) => {changeDifficulty(e)}}>Medium</Button>
