@@ -16,15 +16,15 @@ const reducer = (state, action) => {
           puzzle: action.puzzle
         }
 
-      case 'updatePuzzle':
-        let copy  = state.puzzle
-        let puzzleToBeUpdated = copy[copy.difficulty].puzzle
-        puzzleToBeUpdated[action.index] = Number(action.value)
-        copy[copy.difficulty].puzzle = puzzleToBeUpdated
-        return {
-          ...state,
-          puzzle: copy
-        }
+      // case 'updatePuzzle':
+      //   let copy  = state.puzzle
+      //   let puzzleToBeUpdated = copy[copy.difficulty].puzzle
+      //   puzzleToBeUpdated[action.index] = Number(action.value)
+      //   copy[copy.difficulty].puzzle = puzzleToBeUpdated
+      //   return {
+      //     ...state,
+      //     puzzle: copy
+      //   }
         
       case 'setPuzzleDifficulty':
         return {
