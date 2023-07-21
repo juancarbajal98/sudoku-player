@@ -1,1 +1,0 @@
-let play = new SudokuPlayer()
